@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>管理后台</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/themes/icon.css">
+    <script type="text/javascript" src="__STATIC__/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datagrid-filter.js"></script>
+    <script type="text/javascript" src="__STATIC__/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body style="height: 100%; margin: 5px;">
+    <div title="DataGrid" style="width: 100%; height: 99.5%;">
+        <table id="j_table">
+            <thead>
+                <tr>
+                    <th data-options="field:'ck',checkbox:true"></th>
+                    <th data-options="field:'id'" width="80">ID</th>
+                    <th data-options="field:'name'" width="100">名字</th>
+                    <th data-options="field:'age',align:'right'" width="80">年龄</th>
+                    <th data-options="field:'create_time',align:'right'" width="80">创建时间</th>
+                    <th data-options="field:'update_time'" width="150">更新时间</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="app_dialog"></div>
+    <script type="text/javascript">
+        var demo = {
+            dialog:function(title, link, width, height, buttons) {
+                $('#app_dialog').dialog({
+                    title: title,
+                    width: width,
+                    height: height,
+                    closed: false,
+                    cache: false,
+                    href: link,
+                    modal: true,
+                    buttons:buttons
+                });
+            },
+            dialog_close:function() {
+                $('#app_dialog').dialog('close');
+            },
+            create:function() {
+                demo.dialog('添加数据', '{:url("Demo/create")}', '80%', '45%', [{
+                    text:'添加数据',
+                    iconCls:'icon-add',
+                    handler:function() {
+                        $('#demo_form').form('submit', {
+                            url:'{:url("Demo/create")}',
+                            onSubmit: function() {
+                                
+                            },
+                            success:function(data) {
+                                var res = eval('('+data+')');
+                                if (res.code == 200) {
+                                    $.messager.show({title:'系统提示',msg:'数据添加成功!',timeout:3000});
+                                    demo.dialog_close();
+                                    $('#j_table').datagrid('reload');
+                                } else {
+                                    $.messager.alert('系统提示', '数据添加失败');
+                                }
+                            }
+                        });
+                    }
+                }, {
+                    text:'关闭窗口',
+                    iconCls:'icon-cancel',
+                    handler:function() {
+                        demo.dialog_close();
+                    }
+                }]);
+            },
+            update:function(id) {
+                demo.dialog('更新数据', '{:url("Demo/update")}?id='+id, '80%', '45%', [{
+                    text:'更新数据',
+                    iconCls:'icon-save',
+                    handler:function() {
+                        $('#demo_form').form('submit', {
+                            url:'{:url("Demo/update")}',
+                            onSubmit: function() {
+                                
+                            },
+                            success:function(data) {
+                                var res = eval('('+data+')');
+                                if (res.code == 200) {
+                                    $.messager.show({title:'系统提示',msg:'数据编辑成功!',timeout:3000});
+                                    demo.dialog_close();
+                                    $('#j_table').datagrid('reload');
+                                } else {
+                                    $.messager.alert('系统提示', '数据添加失败');
+                                }
+                            }
+                        });
+                    }
+                }, {
+                    text:'关闭窗口',
+                    iconCls:'icon-cancel',
+                    handler:function() {
+                        demo.dialog_close();
+                    }
+                }]);
+            },
+            remove:function(id) {
+                $.post('{:url("Demo/remove")}', {id:id}, function(res) {
+                    if (res.code == 200) {
+                        $.messager.show({title:'系统提示',msg:'数据删除成功!',timeout:3000});
+                        $('#j_table').datagrid('reload');
+                    } else {
+                        $.messager.alert('系统提示', '数据删除失败');
+                    }
+                },'json');
+            }
+        };
+        var dg = $('#j_table').datagrid({
+            url:'{:url("Demo/index")}',
+            method:'post',
+            singleSelect:true,
+            fit:true,
+            fitColumns:true,
+            pagination:true,
+            toolbar:[{
+                text:'添加',
+                iconCls:'icon-add',
+                handler:function(){
+                    demo.create();
+                }
+            }, {
+                text:'编辑',
+                iconCls:'icon-edit',
+                handler:function() {
+                    var select_data = $('#j_table').datagrid('getChecked');
+                    if (select_data.length != 1) {
+                        $.messager.alert('系统提示', '请选择要编辑的数据!');
+                    } else {
+                        demo.update(select_data[0].id);
+                    }
+                }
+            },'-',{
+                text:'删除',
+                iconCls:'icon-remove',
+                handler:function() {
+                    var select_data = $('#j_table').datagrid('getChecked');
+                    if (select_data.length < 1) {
+                        $.messager.alert('系统提示', '请选择要删除的数据!');
+                    } else {
+                        $.messager.confirm('系统提示', '确定删除该条数据吗?', function(r) {
+                            if (r) {
+                                demo.remove(select_data[0].id);
+                            }
+                        });
+                    }
+                }
+            }]
+        });
+    </script>
+</body>
+</html>

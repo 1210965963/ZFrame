@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>管理后台</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/themes/icon.css">
+    <script type="text/javascript" src="__STATIC__/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/datagrid-filter.js"></script>
+    <script type="text/javascript" src="__STATIC__/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body style="height: 100%; margin: 5px;">
+	<div title="DataGrid" style="width: 100%; height: 99.5%;">
+	    <table id="j_table">
+	        <thead>
+	            <tr>
+	                <th data-options="field:'ck',checkbox:true"></th>
+	                <th data-options="field:'itemid'" width="80">Item ID</th>
+	                <th data-options="field:'productid'" width="100">Product ID</th>
+	                <th data-options="field:'listprice',align:'right'" width="80">List Price</th>
+	                <th data-options="field:'unitcost',align:'right'" width="80">Unit Cost</th>
+	                <th data-options="field:'attr1'" width="150">Attribute</th>
+	                <th data-options="field:'status',align:'center'" width="50">Status</th>
+	            </tr>
+	        </thead>
+	    </table>
+	</div>
+	<script type="text/javascript">
+	    var dg = $('#j_table').datagrid({
+	        url:'{:url("Index/welcome")}',
+	        method:'get',
+	        singleSelect:true,
+	        fit:true,
+	        fitColumns:true,
+	        pagination:true,
+	        toolbar:[{
+	            text:'添加',
+	            iconCls:'icon-add',
+	            handler:function(){
+	                alert('新增')
+	            }
+	        }, {
+	            text:'编辑',
+	            iconCls:'icon-edit',
+	            handler:function() {
+	                alert('编辑')
+	            }
+	        },'-',{
+	            text:'删除',
+	            iconCls:'icon-remove',
+	            handler:function() {
+	                alert('删除')
+	            }
+	        }]
+	    });
+	</script>
+</body>
+</html>
