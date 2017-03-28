@@ -12,6 +12,11 @@ class Demo extends Model
 
     public static function search($params)
     {
-        return static::order('create_time', 'desc')->paginate($params['rows']);
+        $where = [];
+        if (isset($params['search']) && count($params['search'])) {
+            $where = array_map('trim', $params['search']);
+        }
+
+        return static::where($where)->order('create_time', 'desc')->paginate($params['rows']);
     }
 }

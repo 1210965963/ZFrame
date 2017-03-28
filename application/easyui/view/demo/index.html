@@ -11,7 +11,20 @@
     <script type="text/javascript" src="__STATIC__/locale/easyui-lang-zh_CN.js"></script>
 </head>
 <body style="height: 100%; margin: 5px;">
-    <div title="DataGrid" style="width: 100%; height: 99.5%;">
+    <div class="easyui-panel" style="width:100%;margin-bottom:5px;padding:5px 25px;">
+        <form method="get" id="search_form">
+	        <div style="margin-bottom:20px;display: inline-block;width: 20%;">
+	            <input class="easyui-textbox" name="name" label="名字:" labelPosition="top" style="width:100%; height:52px" />
+	        </div>
+	        <div style="margin-bottom:20px;display: inline-block;width: 20%;">
+	            <input class="easyui-textbox" name="age" label="年龄:" labelPosition="top" style="width:100%; height:52px" />
+	        </div>
+	        <div style="width: 20%; display: inline-block;">
+	            <a href="javascript:;" class="easyui-linkbutton" id="search_btn" iconCls="icon-search" style="width:80%;height:32px">搜索</a>
+	        </div>
+        </form>
+    </div>
+    <div title="DataGrid" style="width: 100%; height: 83.5%;">
         <table id="j_table">
             <thead>
                 <tr>
@@ -154,6 +167,15 @@
                     }
                 }
             }]
+        });
+        $('#search_btn').click(function() {
+            var data = $('#search_form').serializeArray();
+            var form_data = {};
+            for (k in data) {
+                if (data[k].value == '') continue;
+                form_data['search['+data[k].name+']'] = data[k].value;
+            }
+            $('#j_table').datagrid('load', form_data);
         });
     </script>
 </body>
